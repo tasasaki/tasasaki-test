@@ -6,39 +6,43 @@
 # =======================================================================================
 # setup
 # =======================================================================================
-
+#{{{
 export LANG=C
-export LISTMAX=-1
+export LISTMAX=1000
 export HOSTNAME=hostname
+export HTTP_PROXY=localhost:80
 
+HISTFILE=${HOME}/.zsh_history
+HISTSIZE=10000
+SAVEHIST=10000
+#}}}
 
 # =======================================================================================
 # PATH
 # =======================================================================================
+#{{{
+path=(
+/sbin \
+/bin \
+/usr/sbin \
+/usr/bin \
+/usr/games \
+/usr/local/sbin \
+/usr/local/bin \
+/home/tasasaki/bin
+)
 
-export PATH=${PATH}:${HOME}/bin
-
+fpath=(${HOME}/.conf/.zsh/function/Completion ${fpath})
+#}}}
 
 # =======================================================================================
 # load .zsh file
 # =======================================================================================
+#{{{
+typeset -U path fpath cdpath manpath
 
 [ -f ${HOME}/.conf/.zsh/.zshalias ] && source ${HOME}/.conf/.zsh/.zshalias
 [ -f ${HOME}/.conf/.zsh/.zshrc ] && source ${HOME}/.conf/.zsh/.zshrc
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#}}}
 

@@ -7,7 +7,7 @@
 # setup
 # =======================================================================================
 #{{{
-fpath=(${HOME}/.conf/.zsh/function/Completion ${fpath})
+umask 022
 setopt no_beep
 setopt nolistbeep
 setopt interactive_comments
@@ -29,11 +29,63 @@ autoload colors; colors
 # prompt
 # =======================================================================================
 #{{{
-PROMPT="%{${fg[cyan]}%}-- `today` %* --%{${reset_color}%}
-%(!.#.$) "
-RPROMPT="%{${fg[red]}%}[%n@%m:%d]%{${reset_color}%}"
-PORMPT2="%B%{${fg[red]}%}%_#%{${reset_color}%}%b "
-SPROMPT="%B%{${fg[red]}%}correct?%{${reset_color}%}%b: %R -> %r "
+PROMPT="$ "
+
+setprompt () {
+	local TERMWIDTH
+	(( TERMWIDTH = ${COLUMNS} - 1 ))
+	
+	local PROMPTSIZE=${#${(%):--- %D{%R.%S %a %b %d %Y}\! ---}}
+	local PWDSIZE=${#${(%):-%~}}
+	
+	if [[ "$PROMPTSIZE + $PWDSIZE" -gt $TERMWIDTH ]]; then
+		(( PR_PWDLEN = $TERMWIDTH - $PROMPTSIZE ))
+	fi
+    if [[ -n "${WINDOW}" ]]; then
+		SCREEN=" S:${WINDOW}"
+	else
+		SCREEN=""
+	fi
+
+	if [[ $(jobs  | wc -l) -gt 0  ]]; then
+		JOBS=" J:%j"
+	else
+		JOBS=""
+	fi
+    # Need this, so the prompt will work
+	setopt prompt_subst
+		
+	# let's load colors into our environment, then set them
+	autoload colors zsh/terminfo
+	
+	if [[ "$terminfo[colors]" -gt 8 ]]; then
+		colors
+	fi
+
+	for COLOR in CYAN BLUE RED GREEN YELLOW WHITE BLACK; do
+		eval PR_$COLOR='%{$fg[${(L)COLOR}]%}'
+		eval PR_BRIGHT_$COLOR='%{$fg_bold[${(L)COLOR}]%}'
+	done
+
+	PR_RESET="%{$reset_color%}"
+
+	# Finally, let's set the prompt
+	PROMPT='\
+${PR_BRIGHT_BLACK}<${PR_RESET}${PR_GREEN}<${PR_BRIGHT_GREEN}<${PR_RESET} \
+%D{%R.%S %a %b %d %Y} ${PR_BLUE}!${PR_RESET} %n@%m ${PR_BLUE}!${PR_RESET} \
+H:%h${SCREEN}${JOBS}%(?.. E:%?)  ${PR_BLUE}!${PR_RESET} \
+%$PR_PWDLEN<...<%~%<< ${PR_BATTERY}${GITBRANCH}\
+
+${PR_BRIGHT_BLACK}>${PR_RESET}%(?.${PR_CYAN}>${PR_BRIGHT_CYAN}>.${PR_RED}>${PR_BRIGHT_RED}>)\
+${PR_BRIGHT_WHITE} '
+
+	# Of course we need a matching continuation prompt
+	PROMPT2='\
+${PR_BRIGHT_BLACK}>${PR_RESET}${PR_GREEN}>${PR_BRIGHT_GREEN}>\
+${PR_RESET} %_ ${PR_BRIGHT_BLACK}>${PR_RESET}${PR_GREEN}>\
+${PR_BRIGHT_GREEN}>${PR_BRIGHT_WHITE} '
+}
+setprompt
 #}}}
 
 # =======================================================================================
@@ -76,10 +128,8 @@ WORDCHARS='*?_-.[]~=&;!#$%^(){}<>'
 # history
 # =======================================================================================
 #{{{
-HISTFILE=${HOME}/.zsh_history
-HISTSIZE=10000
-SAVEHIST=10000
 setopt hist_ignore_all_dups
+setopt hist_no_store
 setopt hist_ignore_dups
 setopt share_history
 setopt append_history

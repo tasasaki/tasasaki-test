@@ -12,26 +12,32 @@ setopt complete_aliases
 alias la="ls -a"
 alias lf="ls -F"
 alias ll="ls -alG"
+alias lsa="ls -aldG .*"
+
 alias du="du -h"
 alias df="df -h"
 alias su="su -l"
+alias cl="clear; ll"
 
 alias h="history -E -32"
 alias hg="history -E 1 | grep "
 alias scn="screen"
+
+alias grep="egrep"
 #}}}
 
 # =======================================================================================
 # global ( pipe )
 # =======================================================================================
 #{{{
-alias -g G='| grep '
-alias -g L='| less '
-alias -g M='| more '
-alias -g T='| tail -20 '
-alias -g H='| head -20 '
-alias -g SUW='| sort | uniq | wc -l '
-alias -g RT='| tail -f '
+alias -g G='|grep '
+alias -g GI='|grep -i '
+alias -g L='|less '
+alias -g M='|more '
+alias -g T='|tail -20 '
+alias -g H='|head -20 '
+alias -g SUW='|sort|uniq|wc -l '
+alias -g RT='|tail -f '
 #}}}
 
 # =======================================================================================
@@ -45,7 +51,7 @@ alias vienv="vi ~/.conf/.zsh/.zshenv"
 alias vivim="vi ~/.conf/.vim/.vimrc"
 alias viscn="vi ~/.conf/.screen/.screenrc"
 
-alias rezsh="source ~/.conf/.zsh/.zshenv"
+alias rezsh="source ~/.conf/.zsh/.zshenv && source ~/.conf/.zsh/.zshrc && source ~/.conf/.zsh/.zshalias"
 #}}}
 
 # =======================================================================================
@@ -55,6 +61,20 @@ alias rezsh="source ~/.conf/.zsh/.zshenv"
 alias today="date +%Y-%m-%d"
 alias now="date +%H:%M:%S"
 alias maildate='date +"%d %B %Y %H:%M:%S +900"'
+#}}}
+
+# =======================================================================================
+# file
+# =======================================================================================
+#{{{
+alias -s c=vim
+alias -s h=vim
+alias -s cpp=vim
+alias -s sh=vim
+alias -s txt=less
+alias -s xml=less
+alias -s conf=less
+alias -s log=tail
 #}}}
 
 # =======================================================================================
